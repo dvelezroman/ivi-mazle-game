@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 
 const dims = [10, 10];
+const KEYS = {
+  37: 'LEFT',
+  38: 'UP',
+  39: 'RIGHT',
+  40: 'DOWN',
+};
 
 export const useGameLogic = () => {
-  const [gridPosition, setGridPosition] = useState([0, 0]);
+  const [gridPosition, setGridPosition] = useState([1, 0]);
   const [gridArray, setGridArray] = useState([]);
 
   const doCreateMatrix = useCallback(() => {
@@ -25,6 +31,12 @@ export const useGameLogic = () => {
   useEffect(() => {
     setGridArray(doCreateMatrix());
   }, [doCreateMatrix]);
+
+  useEffect(() => {
+    document.addEventListener('keyup', (e) => {
+      console.log(KEYS[e.keyCode]);
+    });
+  }, []);
 
   return {
     gridArray,

@@ -1,0 +1,22 @@
+.square {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 25px;
+  height: 25px;
+  border: 0.5px solid black;
+  background-color: gray;
+}
+
+.blank {
+  background-color: honeydew;
+}
+
+.ivi {
+  display: flex;
+  align-self: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: hotpink;
+}

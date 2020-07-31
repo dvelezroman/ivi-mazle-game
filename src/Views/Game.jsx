@@ -1,12 +1,13 @@
 import React from 'react';
 import Grid from '../Components/Grid';
 import { useGameLogic } from '../business/useGameLogic';
+import './Game.scss';
 
 const Game = () => {
-  const { gridArray } = useGameLogic();
+  const { gridArray, gridPosition } = useGameLogic();
   return (
-    <div>
-      <Grid gridArray={gridArray} />
+    <div className="game-container">
+      <Grid gridArray={gridArray} gridPosition={gridPosition} />
     </div>
   );
 };
