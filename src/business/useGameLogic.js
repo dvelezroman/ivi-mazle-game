@@ -9,15 +9,28 @@ const KEYS = {
 
 export const useGameLogic = ({ rows, cols }) => {
   const [gridPosition, setGridPosition] = useState([0, 0]);
+  const [steps, setSteps] = useState(16);
   const [gridArray, setGridArray] = useState([]);
 
-  const doCreateMatrix = useCallback(() => {
-    const matrix = [];
-    for (let i = 0; i < rows; i++) {
-      matrix.push(Array.from(Array(cols), () => Math.round(Math.random())));
-    }
-    return matrix;
-  }, []);
+  const doCreateMatrix = useCallback(
+    (initialGridPosition) => {
+      const matrix = [];
+      for (let i = 0; i < rows; i++) {
+        matrix.push(
+          Array.from(Array(cols), () => (Math.random() * 10 > 9 ? 1 : 0))
+        );
+      }
+      matrix[initialGridPosition[0]][initialGridPosition[1]] = 0;
+      return matrix;
+    },
+    [cols, rows]
+  );
+
+  const doResetMatrix = useCallback(() => {
+    const newMatrix = doCreateMatrix([0, 0]);
+    setGridArray(newMatrix);
+    setGridPosition([0, 0]);
+  }, [doCreateMatrix]);
 
   const isPosibleToMove = useCallback(
     (direction) => {
@@ -58,17 +71,14 @@ export const useGameLogic = ({ rows, cols }) => {
       const direction = KEYS[e.keyCode];
       if (Object.values(KEYS).includes(direction)) {
         const nextPosition = isPosibleToMove(direction);
-        if (nextPosition) {
+        if (nextPosition && steps > 0) {
+          setSteps((state) => state - 1);
           setGridPosition([...nextPosition]);
         }
       }
     },
-    [setGridPosition, isPosibleToMove]
+    [setGridPosition, isPosibleToMove, setSteps, steps]
   );
-
-  useEffect(() => {
-    setGridArray(doCreateMatrix());
-  }, [doCreateMatrix]);
 
   useEffect(() => {
     document.addEventListener('keyup', doMovePosition);
@@ -80,12 +90,15 @@ export const useGameLogic = ({ rows, cols }) => {
       Math.floor(Math.random() * rows),
       Math.floor(Math.random() * cols),
     ];
-    setGridPosition(initialGridPosition);
-  }, [rows, cols, setGridPosition]);
+    // setGridPosition(initialGridPosition);
+    setGridArray(doCreateMatrix(initialGridPosition));
+  }, [rows, cols, setGridPosition, setGridArray, doCreateMatrix]);
 
   return {
+    steps,
     gridArray,
     gridPosition,
     doMovePosition,
+    doResetMatrix,
   };
 };
