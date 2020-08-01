@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 const KEYS = {
   37: 'LEFT',
@@ -8,9 +8,32 @@ const KEYS = {
 };
 
 export const useGameLogic = ({ rows, cols }) => {
+  const timerListener = useRef();
   const [gridPosition, setGridPosition] = useState([0, 0]);
+  const [homePosition, setHomePosition] = useState([9, 9]);
   const [steps, setSteps] = useState(16);
+  const [timer, setTimer] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const [gridArray, setGridArray] = useState([]);
+  const [gameStatus, setGameStatus] = useState({ status: '', message: '' });
+
+  const doStartTimer = useCallback(() => {
+    setGameStatus({ status: 'playing', message: `Timer is running...` });
+    setPlaying(true);
+    timerListener.current = setInterval(() => {
+      setTimer((state) => state + 1);
+    }, 1000);
+  }, [setTimer, setPlaying]);
+
+  const doStopTimer = useCallback(() => {
+    clearInterval(timerListener.current);
+    setPlaying(false);
+  }, [setPlaying]);
+
+  const doResetTimer = useCallback(() => {
+    setTimer(0);
+    setPlaying(false);
+  }, [setTimer, setPlaying]);
 
   const doCreateMatrix = useCallback(
     (initialGridPosition) => {
@@ -29,8 +52,18 @@ export const useGameLogic = ({ rows, cols }) => {
   const doResetMatrix = useCallback(() => {
     const newMatrix = doCreateMatrix([0, 0]);
     setGridArray(newMatrix);
+    setSteps(16);
+    doStopTimer();
     setGridPosition([0, 0]);
-  }, [doCreateMatrix]);
+  }, [doCreateMatrix, doStopTimer]);
+
+  const doResetSteps = useCallback(() => {
+    setSteps(16);
+    doStopTimer();
+    setTimer(0);
+    setGridPosition([0, 0]);
+    setGameStatus({ status: 'playing', message: 'Trying again...' });
+  }, [doStopTimer]);
 
   const isPosibleToMove = useCallback(
     (direction) => {
@@ -54,30 +87,49 @@ export const useGameLogic = ({ rows, cols }) => {
       if (
         nextRow >= 0 &&
         nextCol >= 0 &&
+        nextRow < rows &&
+        nextCol < cols &&
         gridArray.length &&
         !gridArray[nextCol][nextRow]
       ) {
-        // console.log(`[${nextRow}, ${nextCol}]`);
         return nextPosition;
       }
       return null;
     },
-    [gridArray, gridPosition]
+    [gridArray, gridPosition, rows, cols]
   );
 
   const doMovePosition = useCallback(
     (e) => {
       e.stopPropagation();
       const direction = KEYS[e.keyCode];
-      if (Object.values(KEYS).includes(direction)) {
-        const nextPosition = isPosibleToMove(direction);
-        if (nextPosition && steps > 0) {
-          setSteps((state) => state - 1);
-          setGridPosition([...nextPosition]);
+      if (playing) {
+        if (Object.values(KEYS).includes(direction)) {
+          const nextPosition = isPosibleToMove(direction);
+          if (steps) {
+            if (nextPosition && steps > 0) {
+              setSteps((state) => state - 1);
+              setGridPosition([...nextPosition]);
+              if (
+                nextPosition[0] === rows - 1 &&
+                nextPosition[1] === cols - 1
+              ) {
+                doStopTimer();
+                setPlaying(false);
+                setGameStatus({ status: 'won', message: `You won!` });
+              }
+            }
+          } else {
+            if (steps === 0) {
+              doStopTimer();
+              setPlaying(false);
+              setGameStatus({ status: 'lost', message: `You lost!` });
+            }
+          }
         }
       }
     },
-    [setGridPosition, isPosibleToMove, setSteps, steps]
+    [doStopTimer, isPosibleToMove, steps, rows, cols, playing]
   );
 
   useEffect(() => {
@@ -95,10 +147,17 @@ export const useGameLogic = ({ rows, cols }) => {
   }, [rows, cols, setGridPosition, setGridArray, doCreateMatrix]);
 
   return {
+    playing,
     steps,
+    timer,
     gridArray,
     gridPosition,
-    doMovePosition,
+    homePosition,
+    gameStatus,
     doResetMatrix,
+    doResetSteps,
+    doResetTimer,
+    doStartTimer,
+    doStopTimer,
   };
 };

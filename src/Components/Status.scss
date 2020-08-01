@@ -1,0 +1,19 @@
+.statusContainer {
+  display: flex;
+  padding: 2em;
+  height: 50px;
+  justify-content: center;
+  align-content: center;
+  color: green;
+  background-color: whitesmoke;
+}
+
+.success {
+  color: whitesmoke;
+  background-color: yellowgreen;
+}
+
+.fail {
+  color: whitesmoke;
+  background-color: red;
+}
