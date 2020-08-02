@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, shallow, mount } from 'enzyme';
-import Status from '../../Components/Status/Status.jsx';
+import Status from './Status.jsx';
 
 const gameStatus = {
   status: '',
