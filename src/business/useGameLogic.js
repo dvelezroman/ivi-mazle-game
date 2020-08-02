@@ -133,9 +133,12 @@ export const useGameLogic = ({ rows, cols }) => {
   );
 
   useEffect(() => {
-    document.addEventListener('keyup', doMovePosition);
-    return () => document.removeEventListener('keyup', doMovePosition);
-  }, [doMovePosition, setGridPosition]);
+    window.addEventListener('keyup', doMovePosition);
+    return function cleanup() {
+      window.removeEventListener('keyup', doMovePosition);
+      clearInterval(timerListener.current);
+    };
+  }, [doMovePosition]);
 
   useEffect(() => {
     const initialGridPosition = [
@@ -145,7 +148,6 @@ export const useGameLogic = ({ rows, cols }) => {
     // setGridPosition(initialGridPosition);
     setGridArray(doCreateMatrix(initialGridPosition));
   }, [rows, cols, setGridPosition, setGridArray, doCreateMatrix]);
-
   return {
     playing,
     steps,
@@ -154,6 +156,7 @@ export const useGameLogic = ({ rows, cols }) => {
     gridPosition,
     homePosition,
     gameStatus,
+    doMovePosition,
     doResetMatrix,
     doResetSteps,
     doResetTimer,
