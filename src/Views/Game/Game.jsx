@@ -1,9 +1,9 @@
 import React from 'react';
-import Grid from '../Components/Grid';
-import { useGameLogic } from '../business/useGameLogic';
+import { useGameLogic } from '../../business/useGameLogic';
 import './Game.scss';
-import PanelControl from '../Components/PanelControl';
-import Status from '../Components/Status';
+import PanelControl from '../../Components/PanelControl/PanelControl';
+import Status from '../../Components/Status/Status';
+import Grid from '../../Components/Grid/Grid';
 
 const Game = () => {
   const {
