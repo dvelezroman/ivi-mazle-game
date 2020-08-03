@@ -53,6 +53,11 @@ describe('Game suite test panel control', () => {
   });
 });
 
+const waitAsync = (time) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => resolve(true), time);
+  });
+
 describe('Testing hook with components', () => {
   let setupComponent;
   let hook;
@@ -64,11 +69,13 @@ describe('Testing hook with components', () => {
   test('mount hook within component', () => {
     expect(hook.steps).toEqual(16);
   });
-  test('start the game', async () => {
+  test('start the game and timer runs 3 seconds', async () => {
     await act(async () => {
       hook.doStartTimer();
     });
     expect(hook.playing).toEqual(true);
+    await waitAsync(4000);
+    expect(hook.timer).toBe(3);
   });
 });
 
