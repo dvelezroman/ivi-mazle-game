@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import App from './App';
 import { useGameLogic } from './business/useGameLogic';
 
-const getRandomMovement = () => {
+export const getRandomMovement = () => {
   const min = 37;
   const max = 40;
   return Math.ceil(Math.random() * (max - min) + min);

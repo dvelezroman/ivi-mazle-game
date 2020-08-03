@@ -6,6 +6,7 @@ import Grid from '../../Components/Grid/Grid.jsx';
 import PanelControl from '../../Components/PanelControl/PanelControl.jsx';
 import Status from '../../Components/Status/Status.jsx';
 import { useGameLogic } from '../../business/useGameLogic.js';
+import { getRandomMovement } from '../../App.test';
 
 describe('Game suite', () => {
   test('Should render Status Component', () => {
