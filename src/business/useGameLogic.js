@@ -11,7 +11,7 @@ export const useGameLogic = ({ rows, cols }) => {
   const timerListener = useRef();
   const [gridPosition, setGridPosition] = useState([0, 0]);
   const [homePosition, setHomePosition] = useState([9, 9]);
-  const [steps, setSteps] = useState(16);
+  const [steps, setSteps] = useState(20);
   const [timer, setTimer] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [gridArray, setGridArray] = useState([]);
@@ -52,13 +52,13 @@ export const useGameLogic = ({ rows, cols }) => {
   const doResetMatrix = useCallback(() => {
     const newMatrix = doCreateMatrix([0, 0]);
     setGridArray(newMatrix);
-    setSteps(16);
+    setSteps(20);
     doStopTimer();
     setGridPosition([0, 0]);
   }, [doCreateMatrix, doStopTimer]);
 
   const doResetSteps = useCallback(() => {
-    setSteps(16);
+    setSteps(20);
     doStopTimer();
     setTimer(0);
     setGridPosition([0, 0]);
