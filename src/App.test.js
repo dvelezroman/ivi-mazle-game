@@ -1,22 +1,8 @@
 import React from 'react';
-import { renderHook, act, cleanup } from '@testing-library/react-hooks';
-import { render, shallow, mount } from 'enzyme';
+import { renderHook, act } from '@testing-library/react-hooks';
+import { shallow } from 'enzyme';
 import App from './App';
 import { useGameLogic } from './business/useGameLogic';
-
-const DIRECTIONS = {
-  LEFT: 37,
-  UP: 38,
-  RIGHT: 39,
-  DOWN: 40,
-};
-
-const KEYS = {
-  37: 'LEFT',
-  38: 'UP',
-  39: 'RIGHT',
-  40: 'DOWN',
-};
 
 const getRandomMovement = () => {
   const min = 37;
@@ -66,7 +52,17 @@ describe('Test useGameLogic Hook', () => {
     };
     act(() => result.current.doStartTimer());
     expect(result.current.playing).toBe(true);
-    act(() => result.current.doMovePosition(mockEvent));
+    let loops = 1;
+    // this while loop goes until you can move once
+    while (loops > 0) {
+      const previousSetps = result.current.steps;
+      const moveTo = getRandomMovement();
+      mockEvent.keyCode = moveTo;
+      act(() => result.current.doMovePosition(mockEvent));
+      if (result.current.steps < previousSetps) {
+        loops -= 1;
+      }
+    }
     expect(result.current.steps).toBe(15);
   });
   describe('You move 16 steps until you win or lose', () => {

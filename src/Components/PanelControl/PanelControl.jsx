@@ -13,13 +13,19 @@ const PanelControl = ({
 }) => (
   <div className="panel-container">
     <div className="buttons">
-      <button onClick={doStartTimer} className="button" disabled={playing}>
+      <button
+        id="start"
+        onClick={doStartTimer}
+        className="button"
+        disabled={playing}
+      >
         Start
       </button>
-      <button onClick={doResetMatrix} className="button">
+      <button id="reset" onClick={doResetMatrix} className="button">
         Reset
       </button>
       <button
+        id="try-again"
         className="button"
         onClick={doResetSteps}
         disabled={gameStatus.status !== 'lost'}
@@ -27,8 +33,12 @@ const PanelControl = ({
         Try Again
       </button>
     </div>
-    <div className="steps">Steps: {steps}</div>
-    <div className="steps">Timer: {timer}</div>
+    <div id="steps" className="steps">
+      Steps: {steps}
+    </div>
+    <div id="timer" className="steps">
+      Timer: {timer}
+    </div>
   </div>
 );
 
